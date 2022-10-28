@@ -1,53 +1,133 @@
-from operator import itemgetter
+import os, platform, colorama
+from colorama import Fore
 
+products = []            
 
-
-#input product name to variablebnj
-#product_name = input(" input the product name : ")
-#input product price to variable
-#product_price = int(input(" input price of product: "))
-#set 10% variable
-#persen= 10
-#input amount of items
-#amount_items = int(input(" how many items do you buy : " ))
-#harga product * jumlah yang di beli
-#print ( " money spent " ,product_price*amount_items)
-#calculate the 10% from the produk price
-#profit= product_price*persen/100
-#profit_items= profit* amount_items
-#print ("profit 10% : " + str(profit))
-#print("total profit : " + str(profit_items))
-#print the final product price
-#print(product_name,"sale price is : " , product_price + profit)
-#price sale
-#price_sale = product_price+profit
-#total_selling = price_sale*amount_items
-#print(" total sale price" ,total_selling)
-#item sold
-#item_sold = int (input("how many product have been sold : "))
-#profit_sold = profit * item_sold
-#print("profit from items sold : " + str(profit_sold))
-
-products = []
-
-while(True):
+def addProduct():
+    clearDisplay()
+    print("""_""")
+    global product
     product = {}
-    product ["name"] = input("input product_name : ")
-    product ["price"] = int (input("input product price : "))
-    product ["stock"] = int(input("input product stock : "))
-        
-    #add product to products variable
+    product["name"] = input("Product Name   : ")
+    product["price"] = int(input("Product Price  : "))
+    product["stock"] = int(input("Order Quantity : "))
+    product["cost"] = product['price'] * product['stock']
+    
+    product['percent'] = int(input("Percent        : "))
+    product["profit"] = product["price"] * product['percent']/100
+    product["selling_price"] = product['price'] + product['profit']
+    
     products.append(product)
 
-    isBreak = input("stop the application? y for yes n for no : ")
-    if(isBreak == "y" ) :
-        break
+def purchaseProduct():
+    global product
+    showProduct()
+    
+    # global run
+    i = 0
+    run = True
+    while run:
+        choose = input("Choose The Number: ")
+        if int(choose) <= len(products) > 0:
+            order = int(input("Order Quantity: "))
+            break
+            # isContinue = input("Purchase Again? y/n: ")
+            # if isContinue.lower() == 'y':
+            #     run = True
+            # if isContinue.lower() == 'n':
+            #     run = False
+        else:
+            i += 1
+            print("Invalid Input")
+            if i == 3:
+                break
+                 
+             
+    for i, product in enumerate(products):    
+        if int(choose)-1 == i:  
+            product["item_sold"] = order  
+            total_cost = product['selling_price'] * order 
+            product['income'] = product['item_sold'] * product['selling_price']
+            product['total_profit'] = product['income'] - product['cost']
+            clearDisplay()
+            print("""
+ 
+""")
+            print(f"Product Name  : {product['name']}")
+            print(f"Quantity      : {order}")
+            print(f"Total Cost    : {total_cost}")
+            print("-"*40) 
+            print(f"Percent       : {product['percent']}%")
+            print(f"Selling Price : {product['selling_price']}")
+            print(f"Income        : {product['income']}")
+            print(f"Total Profit  : {product['total_profit']}\n\n\n\n\n")
+            
+            
+            product['stock'] = product['stock'] - order
+        
+       
 
-pieces=[]
+def extract(key,list):
+    for i in list:
+        return i[key]
 
-print(products[0])
-for i in products :
-    pieces.append(i["price"])
+def menu():
+    print("""
+1. Show Product
+2. Add Product
+3. Purchase Product
+4. Exit
+""")
+    
+def showProduct():
+    os.system("clear")
+    print('-'*50)
+    # print(f"{'Product': > 10} {'Price': > 10} {'Stock'}")
+    print(f'{" No".ljust(6)}{"Product".ljust(19)} {"Price".ljust(17)} Stock')
+    print('-'*50)
+    
+    for i,product in enumerate(products):
+        i +=1
+        print(f" {str(i).ljust(6)}{str(product['name'].ljust(19))}{(str(product['selling_price']).ljust(18))}{product['stock']}")
+    print('\n')
+    print('-'*50)
+    print("\n" * 4)
+    
+def title():
+    print(Fore.LIGHTYELLOW_EX + """
 
-print(pieces[0])
 
+""")
+    
+def clearDisplay():
+    if platform.system() == "Linux":
+        os.system('clear')
+    if platform.system() == "Windows":
+        os.system('cls')
+    
+    
+def main():
+    run = True
+    while run:
+        menu()
+        choose = input("Enter Number: ")
+        if choose == "1":
+            showProduct()
+            
+        elif choose == "2":
+            addProduct()
+        elif choose == "3":
+            purchaseProduct()
+        elif choose == "4":
+            print("Thank for using the app")
+            break
+        else:
+            print("Invalid Input")  
+              
+            
+if __name__ == "__main__":
+    clearDisplay()
+    title()
+    main()       
+        
+    
